@@ -12,7 +12,7 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/techrohitx/CI-CD-Pipeline-with-Automated-Docker-Security-Scanning-and-Deployment-to-Kubernetes.git'
+                 git branch: 'main', url: 'https://github.com/techrohitx/CI-CD-Pipeline-with-Automated-Docker-Security-Scanning-and-Deployment-to-Kubernetes.git'
             }
         }
 
