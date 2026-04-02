@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/your-repo.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t secure-app .'
+            }
+        }
+
+        stage('Scan Image') {
+            steps {
+                sh 'trivy image secure-app'
+            }
+        }
+
+        stage('Fail if Vulnerable') {
+            steps {
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL secure-app'
+            }
+        }
+
+        stage('Push Image') {
+            steps {
+                sh 'docker tag secure-app yourdockerhub/secure-app'
+                sh 'docker push yourdockerhub/secure-app'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'kubectl apply -f deployment.yaml'
+                sh 'kubectl apply -f service.yaml'
+            }
+        }
+    }
+}
