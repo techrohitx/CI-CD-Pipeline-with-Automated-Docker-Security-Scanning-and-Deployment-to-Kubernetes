@@ -1,36 +1,41 @@
 pipeline {
     agent any
 
+    environment {
+    
+                IMAGE_NAME = "rohitshinde2004/secure-app:latest"
+
+    }
+
+
     stages {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/your-repo.git'
+                git 'https://github.com/techrohitx/CI-CD-Pipeline-with-Automated-Docker-Security-Scanning-and-Deployment-to-Kubernetes.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t secure-app .'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
-        stage('Scan Image') {
+        stage('Scan Image with Trivy') {
             steps {
-                sh 'trivy image secure-app'
+                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE_NAME'
             }
         }
 
-        stage('Fail if Vulnerable') {
+        stage('Push Image to DockerHub') {
             steps {
-                sh 'trivy image --exit-code 1 --severity HIGH,CRITICAL secure-app'
-            }
-        }
-
-        stage('Push Image') {
-            steps {
-                sh 'docker tag secure-app yourdockerhub/secure-app'
-                sh 'docker push yourdockerhub/secure-app'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
+                    sh '''
+                    echo $PASS | docker login -u $USER --password-stdin
+                    docker push $IMAGE_NAME
+                    '''
+                }
             }
         }
 
