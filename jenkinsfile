@@ -3,7 +3,7 @@ pipeline {
 
     environment {
     
-                IMAGE_NAME = "rohitshinde2004/secure-app:latest"
+                IMAGE_NAME = "rohitshinde2004/secures-app:latest"
 
     }
 
