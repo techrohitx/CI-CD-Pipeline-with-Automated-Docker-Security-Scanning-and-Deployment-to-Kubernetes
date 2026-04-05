@@ -20,7 +20,7 @@ The system automates:
 
 ##  Architecture
 
-![Architecture Diagram](img/architecture.png)
+![Architecture Diagram](img/arc.webp)
 
 ---
 
